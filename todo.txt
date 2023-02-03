@@ -29,9 +29,11 @@ Doing:
 [] - Bug, Visual glitch on some ores, shows up as missing
 [] - Replace ';' with ',' in objects to show a new line
 [] - Reset palette 
+[] - Adding menu from push-em to ASCII miner
+[] - Add big stylized logo to ASCII miner
 
 Wants:
-[o] - Doors that can be opened and closed
+[] - Doors that can be opened and closed
 [] - Tutorial menu from main menu with a small room and npc including dialog tutorial
 [] - Adding NPC functionality, dialog boxes and giving items
 [] - Add cavern generation
@@ -44,50 +46,45 @@ Wants:
 [] - Add more items
 [] - Shop to spend ores, to get various upgrades
 [] - Overworld that leads into cave
+[] - Create itch.io page
 
 Currently:
-[] - Going over each tool in Tic80
-[] - Implementing tools into ASCII miner
-[] - Adding menu from push-em to ASCII miner
-[] - Add big stylized logo to ASCII miner
-
-Placement_testing.tic:
-[o] - Fixing up the placement script
-[o] - Bug, Allow user to close vertical door from top/bottom
-[o] - Bug, Allow user to close horizontal door from left/right
-[o] - When a block runs out and then you pick up a new type of block it still acts as though you have 1 of the first block
-[o] - Setting the block representation to blank when the inventory block count is at 0
-[o] - Bug, you can mine black zones and flooring is spawned. Shouldn't be able to mine black zones at all.
-[o] - Bug, You can place blocks in the black zone.
-[] - Set a block limit of 12 blocks to the inventory
-[] - Set a items limit of 12 items to the inventory
-[] - Set a stack limit of 999
-[] - Add cursor rect for inventory
-[] - Create seperate inventory for items
-[] - Represent depth in bottom center
-[] - User interaction key to use staircases
-[] - flash inventory red when the player runs out of room and trys to mine more
-[] - Bug, when you place an item replacing a closed door the closed door is added to your inventory. It should add an open door to your inventory, replacing the closed door.
-[] - Add the cursor to inventory
-[] - Working on line 105 adding checks into the block replacement for placing blocks
-
-Controls:
-Arrow keys = movement
-A/'Z' = Place
-B/'X' = Break
-X/'A' = Inventory mode, while in inventory mode the movement keys allow for selection of blocks
-Y/'S' = Interact, open doors or chests
-
-Shop:
-Mine faster
-Move faster
-Mine two blocks at once
-Bombs, mines a 3x3 area
+[o] - Implementing console printout to Sandbox Alpha Test
+[o] - Rename Ascii_Miner to something better
+[o] - Going over each tool in Tic80
+[o] - Implementing tools into ASCII miner
+[o] - Rename placement test to Murdram
+[] - Implement inventory from Abandoned Roguelike into placement_test
+[] - Add pause menu from Abandoned Roguelike
+[] - Change elements in pause menu to 'Inv, Stats, Exit'
+[] - 'Exit' leads to the main menu for the game
+[] - Add 'credits' to main menu
+[] - Add 'tutorial' to main menu
+[] - Copy menus from Abandoned roguelike into placement_test
+[] - Try object oriented approach for game using the Middleclass lib by kikito
 
 Credits:
 LegoDinoMan
+abcq2 - Created mine.tic, https://tic80.com/play?cart=1187
+derpguy125 - Created minecraft.tic, https://tic80.com/play?cart=402
+Telemar - Created Abandoned_Roguelike.tic, https://tic80.com/play?cart=226 
+Kikito - Created Middleclass lib for lua, https://github.com/kikito/middleclass
+KingPug672 - Created console output, https://tic80.com/play?cart=305
 
-Special thanks:
-abcq2 - Base mine.tic
-Bear Thorne - Tutorials, helped with menus
-derpguy125 - Base minecraft.tic, helped with placing blocks
+References:
+https://tic80.com/play?cart=1187 - mine.tic
+Has the base mining and generation needed for the game
+
+
+
+https://tic80.com/play?cart=226 - Abandoned_Roguelike.tic
+Has elements for inventory, roguelike, mining, movement
+
+https://tic80.com/play?cart=903 - Sandbox_Alpha_Test.tic
+Impressive layer system, good building and destruction system
+
+https://tic80.com/play?cart=2099
+Very impressive tutorial and menu
+
+https://tic80.com/play?cart=305
+Nice output to the console for a watermark
