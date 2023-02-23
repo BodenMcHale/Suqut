@@ -53,6 +53,7 @@ Currently:
 [o] - Rename Ascii_Miner to something better
 [o] - Going over each tool in Tic80
 [o] - Implementing tools into ASCII miner
+[o] - Add console output from Mainfighter.tic
 [o] - Rename placement test to Murdram
 [] - Implement inventory from Abandoned Roguelike into placement_test
 [] - Add pause menu from Abandoned Roguelike
@@ -75,16 +76,20 @@ References:
 https://tic80.com/play?cart=1187 - mine.tic
 Has the base mining and generation needed for the game
 
-
+https://tic80.com/play?cart=402 - minecraft.tic
+Has destruction and very basic inventory
 
 https://tic80.com/play?cart=226 - Abandoned_Roguelike.tic
 Has elements for inventory, roguelike, mining, movement
 
+-- This is overly complicated and not well implemented, but the Z-Layer mechanic is an interesting concept
 https://tic80.com/play?cart=903 - Sandbox_Alpha_Test.tic
 Impressive layer system, good building and destruction system
 
-https://tic80.com/play?cart=2099
+-- I want to implement the Tutorial from this game into Murdram
+https://tic80.com/play?cart=2099 - Elitic.tic
 Very impressive tutorial and menu
 
-https://tic80.com/play?cart=305
+-- Take the console output, change it up a little, implement into Murdram
+https://tic80.com/play?cart=305 - Mainfighter.tic
 Nice output to the console for a watermark
