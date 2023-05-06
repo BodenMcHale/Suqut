@@ -1,3 +1,6 @@
+[] - Rename game to Suqut (Falling/Downfall)
+[] - Introduce story after tutorial
+
 Doing:
 [o] - Spliting entites object into multiple objects
 [o] - Finding each instance of entities and renaming it to the correct object
