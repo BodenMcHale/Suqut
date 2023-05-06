@@ -1,24 +1,10 @@
-[] - Rename game to Suqut (Falling/Downfall)
+[o] - Rename game to Suqut (Falling/Downfall)
 [] - Introduce story after tutorial
+[] - Star Wars type intro for the story introduction
 
-Doing:
-[o] - Spliting entites object into multiple objects
-[o] - Finding each instance of entities and renaming it to the correct object
-[o] - Rename variable 'rock' 
-[o] - Rename variable 'steps' to 'staircase'
-[o] - Rename variable 'loot' to necklace
-[o] - Change textures to ASCII
-[o] - Add bedrock borders to the world
-[o] - Refactor 'ore_vein'
-[o] - Rename 'ore_vein' to 'generate_ore_vein'
-[o] - Update SFX
-[o] - Rename yendor
-[o] - Figure out what variable 'mv' is used for and stands for
-[o] - Rewrite comments on variables to be more clear, or add comments above them
-[o] - Rewrite code to be cleaner
-[o] - Create and implement toggable footstep sound
-[o] - Represent level depth in upper left
-[o] - Add toggle for FoW, FoW (Enabled) = 100 / (Disabled) = 0
+TODO:
+
+[] - Represent level depth in upper left
 [] - Add more ores such as crystal, mithril, flint, lapis, silver
 [] - Add ability to place blocks
 [] - Add menu for stats, show block names
@@ -34,8 +20,6 @@ Doing:
 [] - Reset palette 
 [] - Adding menu from push-em to ASCII miner
 [] - Add big stylized logo to ASCII miner
-
-Wants:
 [] - Doors that can be opened and closed
 [] - Tutorial menu from main menu with a small room and npc including dialog tutorial
 [] - Adding NPC functionality, dialog boxes and giving items
@@ -50,14 +34,6 @@ Wants:
 [] - Shop to spend ores, to get various upgrades
 [] - Overworld that leads into cave
 [] - Create itch.io page
-
-Currently:
-[o] - Implementing console printout to Sandbox Alpha Test
-[o] - Rename Ascii_Miner to something better
-[o] - Going over each tool in Tic80
-[o] - Implementing tools into ASCII miner
-[o] - Add console output from Mainfighter.tic
-[o] - Rename placement test to Murdram
 [] - Implement inventory from Abandoned Roguelike into placement_test
 [] - Add pause menu from Abandoned Roguelike
 [] - Change elements in pause menu to 'Inv, Stats, Exit'
@@ -68,11 +44,10 @@ Currently:
 [] - Try object oriented approach for game using the Middleclass lib by kikito
 
 Credits:
-LegoDinoMan
+LegoDinoMan - Created Suqut
 abcq2 - Created mine.tic, https://tic80.com/play?cart=1187
 derpguy125 - Created minecraft.tic, https://tic80.com/play?cart=402
 Telemar - Created Abandoned_Roguelike.tic, https://tic80.com/play?cart=226 
-Kikito - Created Middleclass lib for lua, https://github.com/kikito/middleclass
 KingPug672 - Created console output, https://tic80.com/play?cart=305
 
 References:
