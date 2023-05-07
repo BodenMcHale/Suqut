@@ -33,6 +33,26 @@ Community
 
 Suqut has a dedicated community of players who love to discuss the game, share tips and strategies, and create mods and variants. You can join the conversation on the official Suqut subreddit at https://www.reddit.com/r/suqut/.
 
+## Palette
+
+- CFAB93 - Desert Sand
+- E5BA90 - Colonial White
+- BF9066 - Fallow
+- 8B6C5A - Copper Rust
+- 66483D - Brown Pod
+- 341C1C - Black Russian
+- 36273A - Raisin Black
+- 44475A - Mako
+- 66646F - Iron
+- 737277 - Squirrel Grey
+- 7388A3 - Topaz
+- 76889C - Blue Bayoux
+- 8498B9 - Blue Chalk
+- BEC7E4 - Lavender Blue
+- 747277 - Comet
+
 ## License
 
 Suqut is released under the MIT License. Please see the LICENSE.md file for details.
+
+
