@@ -35,24 +35,23 @@ Suqut has a dedicated community of players who love to discuss the game, share t
 
 ## Palette
 
-- CFAB93 - Desert Sand
-- E5BA90 - Colonial White
-- BF9066 - Fallow
-- 8B6C5A - Copper Rust
-- 66483D - Brown Pod
-- 341C1C - Black Russian
-- 36273A - Raisin Black
-- 44475A - Mako
-- 66646F - Iron
-- 737277 - Squirrel Grey
-- 7388A3 - Topaz
-- 76889C - Blue Bayoux
-- 8498B9 - Blue Chalk
-- BEC7E4 - Lavender Blue
-- 747277 - Comet
+- Black - 000000
+- Black Russian - 341C1C
+- Blue Bayoux - 76889C
+- Blue Chalk - 8498B9
+- Brown Pod - 66483D
+- Colonial White - E5BA90
+- Comet - 747277
+- Copper Rust - 8B6C5A
+- Desert Sand - CFAB93
+- Fallow - BF9066
+- Iron - 66646F
+- Lavender Blue - BEC7E4
+- Mako - 44475A
+- Raisin Black - 36273A
+- Squirrel Grey - 737277
+- Topaz - 7388A3
 
 ## License
 
 Suqut is released under the MIT License. Please see the LICENSE.md file for details.
-
-
