@@ -3,6 +3,7 @@
 [] - Star Wars type intro for the story introduction
 
 TODO:
+[] - Add different modes such as build, tools
 
 [] - Represent level depth in upper left
 [] - Add more ores such as crystal, mithril, flint, lapis, silver
