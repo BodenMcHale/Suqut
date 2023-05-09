@@ -3,37 +3,23 @@
 [] - Star Wars type intro for the story introduction
 
 TODO:
-[] - Add different modes such as build, tools
+[o] - Add different modes such as build, tools
+[o] - Represent level depth in lower right
+[o] - Add ability to place blocks
+[] - Allow turning in place while building/destroying
+[] - BUG: Player collision doesn't work properly with Z layer detection
+[] - Add Camera that follows player around
+[] - Create cave generation
 
-[] - Represent level depth in upper left
 [] - Add more ores such as crystal, mithril, flint, lapis, silver
-[] - Add ability to place blocks
 [] - Add menu for stats, show block names
-[] - Add pause menu
-[] - Include settings menu in pause screen
 [] - Make veins shorter and thicker
-[] - Fix bedrock borders to multiply by five
-[] - Bug, sometimes the player doesn't load into the world
-[] - Bug, Check if player has spawned in bedrock/out of bounds and if so then reload
-[] - Bug, Gold/Diamond doesn't show up as specks in fog of war anymore
-[] - Bug, Visual glitch on some ores, shows up as missing
-[] - Replace ';' with ',' in objects to show a new line
-[] - Reset palette 
-[] - Adding menu from push-em to ASCII miner
-[] - Add big stylized logo to ASCII miner
 [] - Doors that can be opened and closed
-[] - Tutorial menu from main menu with a small room and npc including dialog tutorial
-[] - Adding NPC functionality, dialog boxes and giving items
 [] - Add cavern generation
 [] - Add building generation
-[] - Peaceful music
 [] - Add water generation function
-[] - Add item generation function
-[] - Add staircase generation function
+[] - Add staircase function
 [] - Add water, similar to bedrock
-[] - Add more items
-[] - Shop to spend ores, to get various upgrades
-[] - Overworld that leads into cave
 [] - Create itch.io page
 [] - Implement inventory from Abandoned Roguelike into placement_test
 [] - Add pause menu from Abandoned Roguelike
