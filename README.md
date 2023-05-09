@@ -1,6 +1,14 @@
-# Welcome to Suqut!
+# Welcome to the Suqut Community!
 
-Suqut is a single-player dungeon exploration game that challenges you to navigate through randomly generated mazes filled with monsters, traps, and treasure. It's a classic game that has been around since 1987, and has since gained a dedicated following of players who love its complex gameplay and challenging difficulty.
+Suqut is a thrilling game about exploration and survival in the depths of a treacherous cave system. Join our community to discuss the game, share your experiences, and get help from other players.
+
+We have created a subreddit called [r/suqut](https://www.reddit.com/r/suqut/) where you can interact with other players, ask for advice, share tips and tricks, and participate in community events. Don't forget to check out the latest news and updates about the game!
+
+If you haven't played Suqut yet, what are you waiting for? Follow this link to get the game and start your own adventure: [Suqut Download](https://github.com/BodenMcHale/Suqut/blob/543a7e9e2a113076827ed5e027ac502c58256ec2/carts/suqut.tic).
+
+Remember, the cave can be dangerous and unforgiving, but with a little luck and a lot of skill, you just might make it out alive. See you in the depths!
+
+Additionally, we would like to invite you to join our Discord server where you can connect with other Suqut players in real-time. Share your progress, ask for help, and discuss the game with other members of the community. Follow this link to join: [Suqut Discord](https://www.reddit.com/r/suqut/). We look forward to seeing you there!
 
 ## Gameplay
 
@@ -24,7 +32,11 @@ Suqut can be played with keyboard commands, or with a mouse and graphical interf
 
 ## Installation
 
-Suqut can be downloaded for free from this Github Repo. It is available for Windows, Mac OS X, and Linux. You can also download the source code and compile it yourself.
+Suqut can be downloaded for free from this Github Repo. It is available for Windows, Mac OS X, and Linux. 
+
+Follow this link to get the game and start your own adventure: [Suqut Download](https://github.com/BodenMcHale/Suqut/blob/543a7e9e2a113076827ed5e027ac502c58256ec2/carts/suqut.tic).
+
+You can also download the source code and compile it yourself.
 
 ## Contributing
 
