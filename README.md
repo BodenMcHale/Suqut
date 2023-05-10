@@ -41,7 +41,8 @@ You can also download the source code and compile it yourself.
 ## Contributing
 
 Suqut is an open source game, and contributions are welcome! If you would like to contribute code or art, please see the CONTRIBUTING.md file for guidelines.
-Community
+
+## Community
 
 Suqut has a dedicated community of players who love to discuss the game, share tips and strategies, and create mods and variants. You can join the conversation on the official Suqut subreddit at https://www.reddit.com/r/suqut/.
 
