@@ -1,0 +1,12 @@
+Feature List:
+
+- A procedurally generated dungeon filled with traps, puzzles, and enemies
+- Over 50 different classes and races to choose from, each with their own strengths and weaknesses
+- Hundreds of different weapons, armor, spells, and items to discover and use
+- Complex game mechanics including hunger, encumbrance, and item identification
+- Dynamic and emergent gameplay that encourages creative problem-solving and experimentation
+- A variety of different game modes, including a traditional roguelike mode and a more accessible variant mode
+- Permadeath and the ability to save and load games for a truly challenging and rewarding experience
+- Multiple paths to victory, with different endings and outcomes depending on the player's choices and actions
+- A vibrant modding community with a wide variety of user-created content available to download and play
+- Multiplayer support for up to four players, with co-op and competitive play modes
