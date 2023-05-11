@@ -1,46 +1,543 @@
--- title:  Suqut
--- author: LegoDinoMan, derpguy125
--- desc:   An example of placing blocks with ASCII visuals
--- script: Lua
+-- title:  Suqut Development
+-- author: LegoDinoMan, JupiterSky
+-- desc:   Arrows to move, top button to swap modes, left button to change block, right button to use tool.
+-- script: lua
 
--- Controls: Place=A, Break=B, Inventory=X, Interact=Y, Movement=Arrows
 
--- Developer
-version="1.0.0"
-updateDate="05-11-2023"
-releaseDate="NIL-NIL-NIL"
+-- Key codes
+controls = {
+  up = 58,
+  down = 59,
+  left = 60,
+  right = 61,
+  jump = 48, -- Space
+  inventory = 22, -- V
+  destroy = 26, -- Z
+  place = 24, -- X
+  mode = 3, -- C
+}
 
--- World
-max_x=30
-max_y=17
+local menu = {}
+menu.subSt = "NONE"
+menu.subSel = 0
+menu.select = 0
+
+local cam = {}
+cam.x = 0
+cam.y = 0
+local transparentTick = {}
+transparentTick.shadow = 0
+transparentTick.heldBlock = 0
+
+-- Inventory
+local inv = {}
+inv.hotbar = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+inv.hotbar.sel = 1
 
 -- Player
-player={sprite=256,x=8,y=10}
-controls={up=0,down=1,left=2,right=3,a=4,b=5,x=6,y=7}
-placement={x=0,y=0} -- Used to determine placement of blocks
-camera={x=-7,y=2}
-direction=0 -- Direction the player faces
-selected_block=0 -- Currently selected block from inventory
-inventory_mode=false -- If the inventory is active or not
-inventory={}
-depth_tracker={}
+local player = {}
+player.x = 8
+player.y = 8
+player.z = 100
+player.vx = 0
+player.vy = 0
+player.vz = 0
+local onGround = false
+local facing = 0
+local playerState = 0
 
--- Hud
-cursor_y_min=8 -- Minimum Y pos for cursor
-cursor_y_max=126 -- Maximum Y pos for cursor
-cursor_y=126 -- Y pos of cursor in inventory
+local render_distance = 7
 
--- Used to add entites to the inventory
-function add(initial_value,add_value)
-  local temp_value=initial_value[add_value] or 0 
-  initial_value[add_value]=temp_value+1
+local placex = 0
+local placey = 0
+
+local camx = 0
+local camy = 0
+
+world = {}
+
+local wminwidth = 0
+local wminheight = 0
+local wmindepth = -100
+
+local wwidth = 32
+local wheight = 17
+local wdepth = 120
+
+local ttemp = {}
+ttemp.type = 0
+ttemp.state = 0
+
+
+-- Initial World Gen
+for i = 0, wwidth do
+  world[i] = {}
+  for k = 0, wheight do
+    world[i][k] = {}
+    for j = 0, wdepth do
+      world[i][k][j] = ttemp
+    end
+  end
 end
 
--- Used to subtract entites to the inventory
-function subtract(initial_value,subtract_value)
-  local temp_value=initial_value[subtract_value] or 0 
-  initial_value[subtract_value]=temp_value-1
+
+-- Displays the current layer vertically in the lower right corner of the screen.
+function display_current_layer()
+  -- Convert the number to a string
+  local number_str = tostring(math.floor(player.z))
+
+  -- Calculate the position of the text
+  local x = 248 - #number_str * 8
+  local y = 136 - #number_str * 8
+
+  -- Display the number vertically
+  for i = 1, #number_str do
+    print(number_str:sub(i, i), x, y + (i - 1) * 8, 15)
+  end
 end
+
+
+-- Animates the shadows for non-roof tiles
+function animate_shadow()
+  local tTick = transparentTick
+
+  if tTick.shadow ~= 3 then
+    tTick.shadow = tTick.shadow + 1
+  else
+    tTick.shadow = 0
+  end
+end
+
+
+-- Animates the block currently in the players hand
+function animate_held_block()
+  local tTick = transparentTick
+
+  if tTick.heldBlock ~= 29 then
+    tTick.heldBlock = tTick.heldBlock + 1
+  else
+    tTick.heldBlock = 0
+  end
+end
+
+
+-- Toggles the inventory display on/off via button press
+function toggle_inventory()
+  if keyp(controls.inventory) and menu.subSt == "NONE" then
+    menu.subSt = "INVENTORY"
+  elseif keyp(controls.inventory) and menu.subSt == "INVENTORY" then
+    menu.subSt = "NONE"
+  end
+end
+
+
+function TIC()
+  cls()
+
+  -- Animate the block currently selected in players hand
+  animate_held_block()
+
+  -- Add shadows to blocks beneath other blocks
+  animate_shadow()
+
+  -- Toggle the inventory on/off
+  toggle_inventory()
+
+  -- TODO: What does this do?
+  if player.z > wdepth then
+    player.z = 0
+  end
+
+  -- TODO: Do I want this here?
+  onGround = false
+
+  -- If the inventory is closed than run updates
+  if menu.subSt == "NONE" then
+    updateCollisions()
+    updatePlayer()
+  end
+
+  -- Draw world elements
+  drawWorld()
+  drawPlayer()
+
+  -- Check if the inventory is open
+  if menu.subSt == "INVENTORY" then
+    drawInventory()
+  end
+
+  -- If the inventory is closed than display the HUD
+  if menu.subSt == "NONE" then
+    display_current_layer()
+  end
+end
+
+-- TODO: Add a description to this function
+function updatePlayer()
+  local moveAmt = 8 -- move amount on the grid
+
+  if keyp(controls.up, 6, 6) then
+    player.y = player.y - moveAmt
+    facing = 0
+  end
+
+  if keyp(controls.down, 6, 6) then
+    player.y = player.y + moveAmt
+    facing = 2
+  end
+
+  if keyp(controls.left, 6, 6) then
+    player.x = player.x - moveAmt
+    facing = 3
+  end
+
+  if keyp(controls.right, 6, 6) then
+    player.x = player.x + moveAmt
+    facing = 1
+  end
+
+  -- TODO: Add jump feature to wall in front of you
+  if keyp(controls.jump) and onGround then
+    player.z = player.z + moveAmt
+  end
+
+  if keyp(controls.mode) then
+    playerState = playerState + 1
+   
+    if playerState > 2 then
+      playerState = 0
+    end
+  end
+
+
+  if facing == 0 then
+    placex = 0
+    placey = -1
+  elseif facing == 1 then
+    placex = 1
+    placey = 0
+  elseif facing == 2 then
+    placex = 0
+    placey = 1
+  elseif facing == 3 then
+    placex = -1
+    placey = 0
+  end
+
+
+  if keyp(controls.place) and playerState == 1 and inv.hotbar[inv.hotbar.sel] ~= nil then
+    local tfd = wget(player.x//8+placex, player.y//8+placey, player.z-1)
+    local tfu = wget(player.x//8+placex, player.y//8+placey, player.z)
+    
+    if tfd.type == 0 then
+      createTile(player.x//8+placex, player.y//8+placey, player.z-1, inv.hotbar[inv.hotbar.sel], 0)
+      sfx(1, "E-3")
+    elseif tfu.type == 0 then
+      createTile(player.x//8+placex, player.y//8+placey, player.z, inv.hotbar[inv.hotbar.sel], 0)
+      sfx(1, "E-3")
+    end
+  elseif keyp(controls.destroy) and playerState == 2 then
+    local tfd = wget(player.x//8+placex, player.y//8+placey, player.z-1)
+    local tfu = wget(player.x//8+placex, player.y//8+placey, player.z)
+      
+    if tfu.type ~= 0 then
+      createTile(player.x//8+placex, player.y//8+placey, player.z, 0, 0)
+      sfx(2, "E-3")
+    elseif tfd.type ~= 0 then
+      createTile(player.x//8+placex, player.y//8+placey, player.z-1, 0, 0)
+      sfx(2, "E-3")
+   end
+  end
+
+  if not onGround then
+   player.vz = player.vz - 0.03
+  end
+
+  player.vx = player.vx * .7
+  player.vy = player.vy * .7
+  player.vz = player.vz * .98
+
+  player.x = player.x + player.vx
+  player.y = player.y + player.vy
+  player.z = player.z + player.vz
+end
+
+
+-- TODO: Add a description to this function
+function drawPlayer()
+  local tTick = transparentTick
+  
+  spr(256, player.x, player.y, 1)
+
+  if playerState == 0 then
+    spr(256, player.x, player.y, 1)
+  elseif playerState == 1 then
+    if inv.hotbar[inv.hotbar.sel] ~= nil then
+      -- Blink the held block
+      if tTick.heldBlock >= 15 then
+        spr(inv.hotbar[inv.hotbar.sel], (player.x//8+placex)*8, (player.y//8+placey)*8)
+
+        -- Add an outline to the highlighted block
+        line(((player.x//8+placex)*8), ((player.y//8+placey)*8)-1, ((player.x//8+placex)*8)+7, ((player.y//8+placey)*8)-1, 14)
+        line(((player.x//8+placex)*8), ((player.y//8+placey)*8)+8, ((player.x//8+placex)*8)+7, ((player.y//8+placey)*8)+8, 14)
+        line(((player.x//8+placex)*8)-1, ((player.y//8+placey)*8), ((player.x//8+placex)*8)-1, ((player.y//8+placey)*8)+7,14)
+        line(((player.x//8+placex)*8)+8, ((player.y//8+placey)*8), ((player.x//8+placex)*8)+8, ((player.y//8+placey)*8)+7, 14)
+      end
+    end
+  elseif playerState == 2 then
+    -- Blink the held block
+      if tTick.heldBlock >= 15 then
+        -- Add an outline to the highlighted block
+        line(((player.x//8+placex)*8), ((player.y//8+placey)*8)-1, ((player.x//8+placex)*8)+7, ((player.y//8+placey)*8)-1, 6)
+        line(((player.x//8+placex)*8), ((player.y//8+placey)*8)+8, ((player.x//8+placex)*8)+7, ((player.y//8+placey)*8)+8, 6)
+        line(((player.x//8+placex)*8)-1, ((player.y//8+placey)*8), ((player.x//8+placex)*8)-1, ((player.y//8+placey)*8)+7,6)
+        line(((player.x//8+placex)*8)+8, ((player.y//8+placey)*8), ((player.x//8+placex)*8)+8, ((player.y//8+placey)*8)+7, 6)
+      end
+  end
+end
+
+
+-- TODO: Add a description to this function
+function updateCollisions()
+  for j = player.z//1-2, player.z//1+1 do
+   for i = 0, wwidth do
+      for k = 0, wheight do
+        local t = wget(i, k, j)
+        
+        if t.type ~= 0 then
+          local above = wget(i, k, player.z+1)
+          
+          if i*8 < player.x+16 and i*8 > player.x-16 and k*8 < player.y+16 and k*8 > player.y-16 and j >= player.z//1-1 then
+            local box1 = {}
+            local box2 = {}
+            
+            box1.x = i*8+4
+            box1.y = k*8+4
+            
+            box2.x = player.x
+            box2.y = player.y
+            
+            box1.width = 8
+            box2.width = 4
+            
+            local hw1 = box1.width*0.5
+            local hw2 = box2.width*0.5
+            local invjmpx = false
+            local invjmpy = false
+            local xjump = 0
+            local yjump = 0
+            local colx = false
+            local coly = false
+            
+            if box2.x >= box1.x and box2.y > box1.y - (hw1 + hw2) and box2.y < box1.y + (hw1 + hw2) then
+              local length = box2.x - box1.x
+              local gap = length - hw1 - hw2
+              if gap < 0 then
+               xjump = gap
+               invjmpx = true
+                colx = true
+              end
+            elseif box2.x < box1.x and box2.y > box1.y - (hw1 + hw2) and box2.y < box1.y + (hw1 + hw2) then
+              local length = box1.x - box2.x
+              local gap = length - hw1 - hw2
+              
+              if gap < 0 then
+                xjump = gap
+                invjmpx = false
+                colx = true
+              end
+            end 
+              
+            if box2.y >= box1.y and box2.x > box1.x - (hw1 + hw2) and box2.x < box1.x + (hw1 + hw2) then
+              local length = box2.y - box1.y
+              local gap = length - hw1 - hw2
+              
+              if gap < 0 then
+                yjump = gap
+                invjmpy = true
+                coly = true
+              end
+            elseif box2.y < box1.y and box2.x > box1.x - (hw1 + hw2) and box2.x < box1.x + (hw1 + hw2) then
+              local length = box1.y - box2.y
+              local gap = length - hw1 - hw2
+              
+              if gap < 0 then
+                yjump = gap
+                invjmpy = false
+                coly = true
+              end
+            end
+            
+            if j == player.z//1 and above.type ~= 0 then
+              if yjump > xjump and coly then
+                if invjmpy then
+                  player.y = box2.y - yjump
+                elseif not invjmpy then
+                  player.y = box2.y + yjump
+                end
+              elseif xjump > yjump and colx then
+                if invjmpx then
+                  player.x = box2.x - xjump
+                elseif not invjmpx then
+                  player.x = box2.x + xjump
+                end
+              end
+            else
+            -- TODO: Check the t.type on this, was defaulted to 34
+              if j == player.z//1 and above.type == 0 and t.type ~= 34 then
+                if colx or coly then
+                  player.z = player.z + 1
+                end
+              end
+              
+              if j < player.z//1+1 then
+               if colx or coly then
+                 onGround = true
+                  player.z = j + 1
+                  player.vz = 0
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+
+-- This function updates the world by creating tiles where none exist and leaving tiles with type 0 alone
+function updateWorld()
+  -- Loop through every level in the world
+  for j = 0, 12 do
+    -- Loop through every row in the level
+    for i = 0, wwidth do
+      -- Loop through every column in the row
+      for k = 0, wheight do
+        -- Get the tile at the specified position
+        local t = world[i][k][j]
+        -- If there is no tile at this position, create a new one with default properties
+        if t == nil then
+          createTile(i, k, j, 0, 0)
+        -- If the tile is of type 0, leave it alone
+        elseif t.type == 0 then
+          -- Generate oxygen (nothing)
+        end
+      end
+    end
+  end
+end
+
+-- TODO: Add a description to this function
+function scanTiles()
+  -- Set a local variable equal to transparentTick
+  local tTick = transparentTick
+
+  -- Initialize an empty table to hold tiles to draw
+  local toDraw = {}
+
+  -- For each coordinate in the player's current depth range (50 tiles above and below the player)
+  for q = player.z // 1 - 50, player.z // 1 do
+    -- Initialize an empty table for the current depth
+    toDraw[q] = {}
+  end
+
+  -- Loop through all world coordinates
+  for j = wminwidth, wwidth do
+    for i = wminheight, wheight do
+      -- Loop through coordinates in reverse order from the player's current depth
+      for q = player.z // 1, player.z // 1 - 50, -1 do
+        
+        -- Get the tile at the current position
+        t = world[j][i][q]
+        
+        -- If the tile is not empty
+        if t.type ~= 0 then
+          -- Create a table to hold information about the tile
+          local tile = {}
+          tile.type = t.type
+          tile.x = j
+          tile.y = i
+          
+          -- Initialize the tile's neighbors to false
+          tile.n = false
+          tile.s = false
+          tile.w = false
+          tile.e = false
+          tile.u = false
+          
+          -- Check each direction for a neighboring empty tile
+          if wget(j, i-1, q).type == 0 then 
+            tile.n = true 
+          end
+          if wget(j, i+1, q).type == 0 then 
+            tile.s = true 
+          end
+          if wget(j-1, i, q).type == 0 then 
+            tile.w = true 
+          end
+          if wget(j+1, i, q).type == 0 then 
+            tile.e = true 
+          end
+          if wget(j, i, q+1).type == 0 then 
+            tile.u = true 
+          end
+          
+          -- Add the tile to the table for the current depth
+          table.insert(toDraw[q], tile)
+
+          -- Exit the loop over depths for this coordinate
+          break
+        end
+      end
+    end
+  end
+    
+  -- Loop through all the layers to draw
+  for j = wmindepth, #toDraw, 1 do
+    -- Check if there is anything to draw in this layer
+    if toDraw[j] ~= nil then
+      -- Loop through all the tiles in this layer
+      for q = 0, #toDraw[j] do
+        -- Get the tile
+        local t = toDraw[j][q]
+        -- Check if the tile has any lines
+        if t ~= nil and (t.n or t.s or t.w or t.e or t.u) then
+          -- Draw the tile sprite
+          spr(t.type, t.x*8, t.y*8, 0)
+
+          -- North highlight
+          if t.n then 
+            line(t.x*8, t.y*8-1, t.x*8+7, t.y*8-1, 15) 
+          end
+
+          -- South highlight
+          if t.s then 
+            --line(t.x*8, t.y*8+8, t.x*8+7, t.y*8+8, 0) 
+          end
+
+          -- West highlight
+          if t.w then 
+            line(t.x*8-1, t.y*8, t.x*8-1, t.y*8+7, 15)
+          end
+
+          -- East highlight
+          if t.e then 
+            line(t.x*8+8, t.y*8, t.x*8+8, t.y*8+7, 0)
+          end
+        end
+      end
+    end
+  end
+end
+
+
+-- TODO: Remove or optimize this, why bother calling a function that only calls another function?
+-- begin to draw the world
+function drawWorld()
+  scanTiles()
+end
+
 
 function drawInventory()
   if menu.subSt == "INVENTORY" then
@@ -83,338 +580,135 @@ function drawInventory()
   end
 end
 
--- Toggles the inventory display on/off via button press
-function toggle_inventory()
-  if keyp(controls.inventory) and menu.subSt == "NONE" then
-    menu.subSt = "INVENTORY"
-  elseif keyp(controls.inventory) and menu.subSt == "INVENTORY" then
-    menu.subSt = "NONE"
+
+-- Retrieves the tile at the specified position in the world
+-- or creates a new tile with default properties
+function wget(q, j, k)
+  -- Initialize an empty table
+  local t = {}
+
+  -- Check that the coordinates are within the world bounds
+  if  q >= wminwidth and j >= wminheight and q <= wwidth and j <= wheight and k <= wdepth then
+    -- Get the tile at the specified position
+    t = world[q][j][k]
   end
+  
+  -- If no tile was found or the tile is empty, create a new tile with default properties
+  if t == nil or t == {} then
+    t = {}
+    t.type = 0
+    t.state = 0
+  end
+  
+  -- Return the tile
+  return t
 end
 
 
--- How the player selects which block to place
-function player_inventory()
-    local hud_y=127
+-- Creates a tile at the specified position in the world
+function createTile(x, y, z, type, state)
+  -- Create a new table to represent the tile
+  local t = {}
 
-    -- Enter inventory mode
-    if btnp(controls.x) then
-        if inventory_mode then
-            inventory_mode=false
+  -- Set the tile's type and state
+  t.type = type
+  t.state = state
+
+  -- Add the tile to the world at the specified position
+  world[x][y][z] = t
+end
+
+
+-- Draws a menu box with a border around it
+function menuBox(x, y, width, height, col1, col2, col3, col4, col5)
+  -- draw the box
+  rect(x - width / 2, y - height / 2, width, height, col1)
+
+  -- draw the border lines
+  line(x - width / 2 - 1, y - height / 2 - 1, x + width / 2, y - height / 2 - 1, col2) -- top line
+  line(x - width / 2 - 1, y + height / 2, x + width / 2, y + height / 2, col3) -- bottom line
+  line(x - width / 2 - 1, y - height / 2, x - width / 2 - 1, y + height / 2 - 1, col4) -- left line
+  line(x + width / 2, y - height / 2, x + width / 2, y + height / 2 - 1, col5) -- right line
+end
+
+
+-- Returns a random float between the min and max values, inclusive.
+-- The d parameter specifies the number of decimal places to include in the result.
+function rnd(min, max, d)
+  return math.random(min*d, max*d) / d
+end
+
+
+-- The _INIT function is called once at the beginning of the program to set up the game world.
+function _INIT()
+  -- Loop through each column (q) and row (j) in the world.
+  for q = 0, 30 do
+    for j = 0, 17 do
+      -- Loop through each depth level (k) in the world.
+      -- wmindepth and wdepth are global variables that determine the depth range of the world.
+      for k = wmindepth, wdepth do
+        -- Generate a random number between 0 and 500.
+        -- This number is used to determine what type of tile to create at the current position.
+        local oreRND = rnd(0, 500, 1)
+        
+        -- If the current depth level is 51 and the oreRND value is less than 1, create a leaf tile.
+        -- Otherwise, if the current depth level is greater than 50, create a background tile.
+        -- Otherwise, determine what type of tile to create based on the oreRND value and depth level.
+        if k == 51 and oreRND <= 10 then
+          -- TODO: Foliage
+          createTile(q, j, k, 3, 0)
+        elseif k > 50 then
+          -- Empty
+          createTile(q, j, k, 0, 0)
+        elseif k == 50 then
+          createTile(q, j, k, 1, 0)
         else
-            inventory_mode=true
+          -- Determine what type of tile to create based on the oreRND value and depth level.
+          -- First set of ores
+          if k < 0 and oreRND <= 40 then
+            createTile(q, j, k, 33, 0)
+          elseif k < 5 and oreRND <= 10 then
+            createTile(q, j, k, 33, 0)
+          elseif k < 30 and oreRND <= 5then
+            createTile(q, j, k, 33, 0)
+            
+          -- Second set of ores
+          elseif oreRND <= 15 and k < 40 then
+            createTile(q, j, k, 4, 0)
+          elseif oreRND <= 20 and k < 7 then
+            createTile(q, j, k, 4, 0)
+            
+          -- Third set of ores
+          elseif oreRND <= 50 and k < 47 then
+            createTile(q, j, k, 5, 0)
+            
+          -- Stone
+          else
+            createTile(q, j, k, 2, 0)
+          end
         end
-    end 
-
-    if inventory_mode then
-        -- Select previous block
-        if btnp(controls.up) then
-            selected_block=selected_block-1
-        end
-        -- Select next block
-        if btnp(controls.down) then
-            selected_block=selected_block+1
-        end
-    end
-
-    -- Render the inventory
-    for blocks,count in pairs(inventory) do
-        -- Add more background as the number expands
-        -- to improve readability of numbers
-        if count==0 then
-            -- Render nothing
-        elseif count<=10 then
-            spr(blocks,2,hud_y)
-            rect(10,hud_y,8,8,0)
-            print(count,12,hud_y+2,15)
-            hud_y=hud_y-10
-        elseif count>10 and count<=100 then
-            spr(blocks,2,hud_y)
-            rect(10,hud_y,8,8,0)
-            rect(18,hud_y,8,8,0)
-            print(count,12,hud_y+2,15)
-            hud_y=hud_y-10
-        elseif count>100 and count<1000 then -- Item cap is 999
-            spr(blocks,2,hud_y)
-            rect(10,hud_y,8,8,0)
-            rect(18,hud_y,8,8,0)
-            rect(26,hud_y,8,8,0)
-            print(count,12,hud_y+2,15)
-            hud_y=hud_y-10
-        end
-    end
-    
-    -- Old inventory
-    rect(230,0,240,10,0)
-    spr(selected_block,231,1,0)
-end
-
-function player_movement()
-  -- Move up
-  if btnp(controls.up,6,6) and inventory_mode==false and direction==1 and (mget(player.x,player.y-1)==1 or mget(player.x,player.y-1)==16) then 
-    player.y=player.y-1
-    camera.y=camera.y-1
-    direction=1
-    sfx(0)
-  elseif btnp(controls.up,6,6) and inventory_mode==false then
-    direction=1
-    sfx(0)
-  end
-  
-  -- Move down
-  if btnp(controls.down,6,6) and inventory_mode==false and direction==0 and (mget(player.x,player.y+1)==1 or mget(player.x,player.y+1)==16) then
-    player.y=player.y+1
-    camera.y=camera.y+1
-    direction=0
-    sfx(0)
-  elseif btnp(controls.down,6,6) and inventory_mode==false then
-    direction=0
-    sfx(0)
-  end
-  
-  -- Move left
-  if btnp(controls.left,6,6) and inventory_mode==false and direction==2 and (mget(player.x-1,player.y)==1 or mget(player.x-1,player.y)==16) then
-    player.x=player.x-1
-    camera.x=camera.x-1
-    direction=2
-    sfx(0)
-  elseif btnp(controls.left,6,6) and inventory_mode==false then
-    direction=2
-      sfx(0)
-  end
-  
-  -- Move right
-  if btnp(controls.right,6,6) and inventory_mode==false and direction==3 and (mget(player.x+1,player.y)==1 or mget(player.x+1,player.y)==16) then
-    player.x=player.x+1
-    camera.x=camera.x+1
-    direction=3
-    sfx(0)
-  elseif btnp(controls.right,6,6) and inventory_mode==false then
-    direction=3
-    sfx(0)
-  end
-end
-
--- Mining and placing blocks
-function player_block_manager()
-  local new_x=player.x+placement.x
-  local new_y=player.y+placement.y
-  local target_entity=mget(new_x,new_y)
-
-    if selected_block>16 then
-        selected_block=2
-    elseif selected_block<2 then
-        selected_block=16
-    end
-
-    -- Place blocks
-    if btnp(controls.a) then
-      if inventory[selected_block]~=nil and inventory[selected_block]>0 then            
-            if mget(new_x,new_y)==1 then
-              -- Remove the block from the inventory
-                subtract(inventory,selected_block)
-              mset(new_x,new_y,0+selected_block)
-                sfx(1)
-            -- If it isn't floor, staircase, or black
-            elseif mget(new_x,new_y)~=1 and mget(new_x,new_y)~=19 and mget(new_x,new_y)~=0 then
-                subtract(inventory,selected_block)
-                -- Add the block that you replaced to the inventory
-                -- Add the mined blocks to the inventory
-              if target_entity>1 and target_entity<19 then
-                -- Open doors are converted back into closed
-              -- doors when added to the inventory
-                if target_entity==17 or target_entity==18 then
-                  add(inventory,16)
-              else
-                add(inventory,target_entity)
-              end
-                end
-                mset(new_x,new_y,0+selected_block)
-                sfx(1)
-            else
-                sfx(3)
-            end
-        else
-            sfx(3)
-        end
-    end
-  
-    -- Destroy blocks
-    -- Can't mine staircases or unexplored
-    if btnp(controls.b) and (target_entity~=19 and target_entity~=0) then
-        mset(new_x,new_y,1)
-        sfx(1)
-        -- Add the mined blocks to the inventory
-      if target_entity>1 and target_entity<19 then
-        -- Open doors are converted back into closed
-      -- doors when added to the inventory
-        if target_entity==17 or target_entity==18 then
-          add(inventory,16)
-      else
-        add(inventory,target_entity)
+        
       end
-      elseif target_entity==19 then -- Add staircases to the depth tracker 
-        add(depth_tracker,target_entity)
-        else
-            sfx(3)
-        end
-    elseif btnp(controls.b) and (target_entity==19 or target_entity==0) then
-        sfx(3)
     end
-end
-
-
--- How the player interacts with entities
-function player_interaction()
-  -- Interact up
-  -- Close doors
-  if btnp(controls.y,6,6) and inventory_mode==false and direction==1 and mget(player.x,player.y-1)==16 then 
-    mset(player.x,player.y-1,18)
-    direction=1
-    sfx(2)
-  -- Open doors
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==1 and (mget(player.x,player.y-1)==17 or mget(player.x,player.y-1)==18) then
-    mset(player.x,player.y-1,16)
-      direction=1
-      sfx(2)
-  -- Staircases
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==1 and mget(player.x,player.y-1)==19 then
-      -- TODO: Add code to move up a layer like generate_map()
-      direction=1
-      sfx(3)
-  end
-  
-  -- Interact down
-  if btnp(controls.y,6,6) and inventory_mode==false and direction==0 and mget(player.x,player.y+1)==16 then
-      mset(player.x,player.y+1,18)
-      direction=0
-      sfx(2)
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==0 and (mget(player.x,player.y+1)==17 or mget(player.x,player.y+1)==18) then
-    mset(player.x,player.y+1,16)
-      direction=0
-      sfx(2)
-  -- Staircases
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==1 and mget(player.x,player.y-1)==19 then
-      direction=1
-      sfx(3)
-  end
-  
-  -- Interact left
-  if btnp(controls.y,6,6) and inventory_mode==false and direction==2 and mget(player.x-1,player.y)==16 then
-    mset(player.x-1,player.y,17)
-      direction=2
-      sfx(2)
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==2 and (mget(player.x-1,player.y)==17 or mget(player.x-1,player.y)==18) then
-    mset(player.x-1,player.y,16)
-      direction=2
-      sfx(2)
-  -- Staircases
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==1 and mget(player.x,player.y-1)==19 then
-      direction=1
-      sfx(3)
-  end
-  
-  -- Interact right
-  if btnp(controls.y,6,6) and inventory_mode==false and direction==3 and mget(player.x+1,player.y)==16 then
-    mset(player.x+1,player.y,17)
-      direction=3
-      sfx(2)
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==3 and (mget(player.x+1,player.y)==17 or mget(player.x+1,player.y)==18) then
-    mset(player.x+1,player.y,16)
-      direction=3
-      sfx(2)
-  -- Staircases
-  elseif btnp(controls.y,6,6) and inventory_mode==false and direction==1 and mget(player.x,player.y-1)==19 then
-      direction=1
-      sfx(3)
   end
 end
 
-function check_player_direction()
-  if direction==0 then
-      placement.x=0
-      placement.y=1
-  end
-  
- if direction==1 then
-    placement.x=0
-      placement.y=-1
-  end
-    
-  if direction==2 then
-    placement.x=-1
-      placement.y=0
-  end
-  
- if direction==3 then
-    placement.x=1
-      placement.y=0
-  end
-end
-
-
--- Print a message to the console
-trace("\n\n----------------------------------\nAuthor: LegoDinoMan\nTitle: Murdram \nVersion: "..version.."\nUpdated: "..updateDate.."\nReleased: "..releaseDate.."\nLostRabbitDigital.itch.io/murdram\n----------------------------------\n")
-
-
-function TIC()
-  check_player_direction()
-  player_block_manager()
-  player_movement()
-  player_interaction()
-  
-    map(player.x-15,player.y-8,max_x,max_y)
-
-    player_inventory()
-    
-    -- TODO:Get rid of this block of code
-    local hud_y=128
-    -- Render the depth_tracker
-    for depth_levels,count in pairs(depth_tracker) do
-      spr(depth_levels,2,0)
-        if count<=10 then
-            rect(10,hud_y,8,8,14)
-        elseif count>10 and count<=100 then
-            rect(10,hud_y,8,8,14)
-            rect(18,hud_y,8,8,14)
-        elseif count>100 and count<1000 then -- Depth cap is 999
-            rect(10,hud_y,8,8,14)
-            rect(18,hud_y,8,8,14)
-            rect(26,hud_y,8,8,14)
-        end
-        print(count,12,2,15)
-    end
-
-    spr(player.sprite+direction,15*8,8*8,0)
-end
-
+_INIT()
 -- <TILES>
--- 001:000000000000000000000000000ff000000ff000000000000000000000000000
--- 002:0000000000100100011111100010010000100100011111100010010000000000
--- 003:0000000000200200022222200020020000200200022222200020020000000000
--- 004:0000000000300300033333300030030000300300033333300030030000000000
--- 005:0000000000400400044444400040040000400400044444400040040000000000
--- 006:0000000000500500055555500050050000500500055555500050050000000000
--- 007:0000000000600600066666600060060000600600066666600060060000000000
--- 008:0000000000700700077777700070070000700700077777700070070000000000
--- 009:0000000000800800088888800080080000800800088888800080080000000000
--- 010:0000000000900900099999900090090000900900099999900090090000000000
--- 011:0000000000a00a000aaaaaa000a00a0000a00a000aaaaaa000a00a0000000000
--- 012:0000000000b00b000bbbbbb000b00b0000b00b000bbbbbb000b00b0000000000
--- 013:0000000000c00c000cccccc000c00c0000c00c000cccccc000c00c0000000000
--- 014:0000000000d00d000dddddd000d00d0000d00d000dddddd000d00d0000000000
--- 015:0000000000e00e000eeeeee000e00e0000e00e000eeeeee000e00e0000000000
--- 016:00000000000ff000000ff0000ffffff00ffffff0000ff000000ff00000000000
--- 017:00000000000ff000000ff000000ff000000ff000000ff000000ff00000000000
--- 018:0000000000000000000000000ffffff00ffffff0000000000000000000000000
--- 019:00000000fff00000000fff00000000ff000000ff000fff00fff0000000000000
+-- 001:0000000000b00b000bbbbbb000b00b0000b00b000bbbbbb000b00b0000000000
+-- 002:0000000000a00a000aaaaaa000a00a0000a00a000aaaaaa000a00a0000000000
+-- 003:0000000000400400044444400040040000400400044444400040040000000000
+-- 033:0000000000900900099999900090090000900900099999900090090000000000
+-- 034:0000000000600600066666600060060000600600066666600060060000000000
+-- 035:0000000000d00d000dddddd000d00d0000d00d000dddddd000d00d0000000000
+-- 065:00000000000ff000000ff0000ffffff00ffffff0000ff000000ff00000000000
+-- 066:00000000000ff000000ff000000ff000000ff000000ff000000ff00000000000
+-- 067:0000000000000000000000000ffffff00ffffff0000000000000000000000000
+-- 081:00000000fff00000000fff00000000ff000000ff000fff00fff0000000000000
 -- </TILES>
 
 -- <SPRITES>
 -- 000:000000000ffffff00f0000f00f0ff0f00f0ffff00f0000000fffff0000000000
--- 001:000000000fffff000f0000000f0ffff00f0ff0f00f0000f00ffffff000000000
--- 002:000000000ffffff00f0000f00f0ff0f00ffff0f0000000f000fffff000000000
--- 003:000000000ffffff00f0000f00f0ff0f00f0ffff00f0000000fffff0000000000
 -- 048:0ffff000f0000f00f00000f0f00ff0f00ff00e000000e8e00000e24000000400
 -- </SPRITES>
 
