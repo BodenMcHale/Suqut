@@ -1,0 +1,29 @@
+Game Design Document: Suqut
+
+Overview:
+
+Suqut is a classic dungeon-crawling RPG game with a focus on exploration, combat, and survival. The game takes place in a procedurally generated dungeon that is full of deadly monsters, traps, and treasures. The player must navigate through the dungeon, battle monsters, collect items and weapons, and ultimately defeat the final boss to complete the game. Suqut offers a challenging and rewarding gameplay experience for players who are looking for a deep and complex RPG game.
+
+Gameplay:
+
+The player begins the game by selecting a character class, such as a warrior, wizard, or rogue, and a race, such as human, elf, or dwarf. Each class and race has its own unique abilities and weaknesses, which can affect gameplay and strategy. For example, a warrior may have high strength and be skilled in melee combat, while a wizard may have powerful spells but be weak in physical combat.
+
+Once the player has selected their character, they are dropped into the dungeon, where they must explore the levels, defeat monsters, and collect items. The dungeon is divided into levels, each with its own layout and unique challenges. The player can use stairs to move between levels, but once they move to the next level, they cannot return to the previous one.
+
+The dungeon is full of dangerous monsters, such as goblins, trolls, and dragons, as well as traps and puzzles. Combat is turn-based, with the player and monsters taking turns to attack each other. The player can use a variety of weapons, spells, and abilities to defeat monsters, such as swords, bows, fireballs, and healing spells. However, the player must also manage their health, hunger, and equipment, as well as avoid traps and other hazards.
+
+As the player progresses through the dungeon, they will find and collect a variety of items, such as weapons, armor, potions, and scrolls. These items can be used to enhance the player's abilities or overcome obstacles in the dungeon. However, some items may also be cursed or dangerous, so the player must be careful when using or equipping them.
+
+Ultimately, the player's goal is to reach the final level of the dungeon and defeat the boss monster, which is randomly selected from a pool of possible bosses. Once the boss is defeated, the player has completed the game and can start a new adventure with a new character.
+
+Art Style:
+
+Suqut uses a retro, ASCII art style, with simple graphics and text-based descriptions. The game's interface is minimalistic, with most of the gameplay happening through keyboard inputs and text-based feedback. The game's audio is also simple, with basic sound effects and no background music.
+
+Platforms:
+
+Suqut can be played on a variety of platforms, including Windows, macOS, Linux, and mobile devices. The game is open-source and free to download and play, and there are also several community-built versions and mods available.
+
+Conclusion:
+
+Suqut is a classic and challenging RPG game that has stood the test of time. Its deep and complex gameplay, combined with its retro ASCII art style, has made it a favorite among hardcore RPG fans. With its focus on exploration, combat, and survival, Suqut offers a rewarding and immersive gaming experience that is sure to keep players coming back for more.
