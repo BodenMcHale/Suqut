@@ -51,10 +51,10 @@ Has elements for inventory, roguelike, mining, movement
 https://tic80.com/play?cart=903 - Sandbox_Alpha_Test.tic
 Impressive layer system, good building and destruction system
 
--- I want to implement the Tutorial from this game into Murdram
+-- I want to implement the Tutorial from this game into Suqut
 https://tic80.com/play?cart=2099 - Elitic.tic
 Very impressive tutorial and menu
 
--- Take the console output, change it up a little, implement into Murdram
+-- Take the console output, change it up a little, implement into Suqut
 https://tic80.com/play?cart=305 - Mainfighter.tic
 Nice output to the console for a watermark

@@ -1,1 +1,0 @@
-tq-bundler run game.lua main.lua --tic tic80

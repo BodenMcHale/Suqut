@@ -1,0 +1,22 @@
+Project scope is the sum of all the work that needs to be done to complete a project. It includes the project's goals, objectives, deliverables, and timeline.
+
+To decrease the scope of a project, you can:
+
+    Remove features or functionality that are not essential to the project's goals.
+    Reduce the project's scope by breaking it down into smaller, more manageable tasks.
+    Set realistic deadlines and expectations for the project.
+    Communicate regularly with stakeholders to keep them updated on the project's progress and to get their feedback.
+
+When decreasing the scope of a project, it is important to be careful not to remove too much functionality or features. The project should still be able to meet the needs of the users and stakeholders.
+
+Here are some tips for decreasing the scope of a project according to the limitations of Tic-80:
+
+    Consider the target audience. Who will be using the project? What are their needs and expectations?
+    Identify the essential features. What features are absolutely necessary for the project to be successful?
+    Prioritize the features. Not all features are created equal. Some features are more important than others.
+    Eliminate unnecessary features. If a feature is not essential, it should be eliminated.
+    Simplify the design. The simpler the design, the easier it will be to implement.
+    Use existing resources. If there are existing resources that can be used, such as code or assets, then use them.
+    Get feedback from users. Get feedback from users early and often. This will help you to identify any areas that need improvement.
+
+By following these tips, you can decrease the scope of a project and make it more manageable.
