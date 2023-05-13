@@ -1,5 +1,7 @@
 Feature List:
 
+Wanted Features:
+
 - A procedurally generated dungeon filled with traps, puzzles, and enemies
 - Hundreds of different weapons, armor, spells, and items to discover and use
 - Complex game mechanics including hunger, encumbrance, and item identification
@@ -9,9 +11,32 @@ Feature List:
 - Multiple paths to victory, with different endings and outcomes depending on the player's choices and actions
 
 
-- Inventory
-- Procedural maps
+Planned Feature Releases:
+
+0.1.0:
+- Procedural caves
+- Basic SFX
+
+0.2.0:
 - Item interaction
+- Inventory
+
+0.3.0:
 - Enemies
-- Health system
-- Luck system
+- Interaction systems
+  - Health
+  - Luck
+  - Mana
+  - Strength
+
+0.4.0:
+- Intereaction systems
+  - Item inspection
+  - Creature identification 
+
+- Menus
+  - Inventory
+  - Player stats
+  - Item inspection
+  - Main menu
+  - Death menu 
