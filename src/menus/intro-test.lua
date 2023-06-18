@@ -1,7 +1,4 @@
--- Used in intro_story to end the loop
-local displayIntroText = true
-
--- Explains the story like Star Wars
+-- Display the intro story in a Star Wars format
 function intro_story()
   local text = [[
   Ahmed was an experienced spelunker, having 
@@ -47,14 +44,16 @@ function intro_story()
   ]]
   local t = time() / 80
   local q = t > 800 or cls() 
-  local speed = 0.5
-  local color = 4
-  local y = 0
+  local scroll_speed = 1
+  local text_color = 4
 
-  print(text, 0, 150 - t * speed, color)
+  print(text, 0, 150 - t * scroll_speed, text_color)
 end
 
 function TIC()
+  cls()
+
+  -- Play the intro storyload
   intro_story()
 end
 
@@ -86,4 +85,3 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e53ef7d57ffcd75a7f07038b76425717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
 -- </PALETTE>
-
