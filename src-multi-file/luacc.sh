@@ -1,1 +1,0 @@
-luacc -o game.lua -p 6 -i ./ main "libs/math" "libs/string" "libs/table" "libs/consts"
