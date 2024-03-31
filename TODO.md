@@ -1,5 +1,10 @@
 To-Do:
 
+[] - Rename to Suquut
+[] - Fact-check name with Arabic speaker
+[] - Write out story
+[] - Design world map
+
 [] - Refactor dungeon-gen to follow Lua naming conventions with functions and variables
 [] - Add multiple rooms to a floor
 [] - Add connecting hallways to rooms
